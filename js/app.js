@@ -13,7 +13,15 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
-
+supabaseClient
+  .from("recreo_registros")
+  .select("*")
+  .limit(1)
+  .then(result => {
+    console.log("========== PRUEBA SUPABASE ==========");
+    console.log(result);
+    console.log("======================================");
+  });
 
 // =========================================================
 // ELEMENTOS PRINCIPALES

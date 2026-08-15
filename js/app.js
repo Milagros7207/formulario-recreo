@@ -689,19 +689,15 @@ if (form) {
 // =========================================================
 
 function showSuccessScreen() {
-
-  const successScreen =
-    document.querySelector(
-      ".success-screen"
-    );
+  const successScreen = document.querySelector(".success-screen");
 
   if (!successScreen) return;
 
-  successScreen.classList.add(
-    "show"
-  );
+  successScreen.classList.add("show");
 
-  createConfetti();
+  setTimeout(() => {
+    createConfetti();
+  }, 100);
 }
 
 
@@ -710,28 +706,20 @@ function showSuccessScreen() {
 // =========================================================
 
 function createConfetti() {
-
-  const container =
-    document.querySelector(
-      ".confetti"
-    );
+  const container = document.querySelector(".confetti");
 
   if (!container) return;
 
   container.innerHTML = "";
 
-  const pieces = 80;
+  const pieces = 100;
 
   for (let i = 0; i < pieces; i++) {
+    const piece = document.createElement("span");
 
-    const piece =
-      document.createElement("span");
+    piece.className = "confetti-piece";
 
-    piece.className =
-      "confetti-piece";
-
-    piece.style.left =
-      `${Math.random() * 100}%`;
+    piece.style.left = `${Math.random() * 100}%`;
 
     piece.style.animationDuration =
       `${3 + Math.random() * 4}s`;

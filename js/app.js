@@ -613,13 +613,20 @@ async function submitRegistration() {
 
   try {
 
-    const {
-      data: insertedData,
-      error
-    } = await supabaseClient
-      .from("recreo_registros")
-      .insert([data])
-      .select();
+    const { error } = await supabaseClient
+  .from("recreo_registros")
+  .insert([data]);
+
+if (error) {
+  console.error(
+    "Supabase respondió con error:",
+    error
+  );
+
+  throw error;
+}
+
+showSuccessScreen();
 
     if (error) {
 

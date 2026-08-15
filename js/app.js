@@ -257,14 +257,47 @@ document.querySelectorAll(".choice-card").forEach(card => {
 
 document
   .querySelectorAll(
-    'input[name="organizacion"]'
+    '[data-choice="organizacion"]'
   )
-  .forEach(input => {
+  .forEach(button => {
 
-    input.addEventListener("change", () => {
+    button.addEventListener("click", () => {
+
+      const value =
+        button.dataset.value;
 
       formData.organizacion =
-        input.value;
+        value;
+
+      // Marcar opción seleccionada
+      document
+        .querySelectorAll(
+          '[data-choice="organizacion"]'
+        )
+        .forEach(item => {
+          item.classList.remove(
+            "selected"
+          );
+        });
+
+      button.classList.add(
+        "selected"
+      );
+
+      // Mostrar / ocultar campo
+      const conditional =
+        document.querySelector(
+          "#orgConditional"
+        );
+
+      if (conditional) {
+
+        conditional.classList.toggle(
+          "show",
+          value === "Sí"
+        );
+
+      }
 
     });
 
@@ -277,27 +310,44 @@ document
 
 document
   .querySelectorAll(
-    'input[name="clubLeo"]'
+    '[data-choice="clubLeo"]'
   )
-  .forEach(input => {
+  .forEach(button => {
 
-    input.addEventListener("change", () => {
+    button.addEventListener("click", () => {
+
+      const value =
+        button.dataset.value;
 
       formData.clubLeo =
-        input.value;
+        value;
 
+      // Marcar opción seleccionada
+      document
+        .querySelectorAll(
+          '[data-choice="clubLeo"]'
+        )
+        .forEach(item => {
+          item.classList.remove(
+            "selected"
+          );
+        });
+
+      button.classList.add(
+        "selected"
+      );
+
+      // Mostrar / ocultar campo
       const conditional =
         document.querySelector(
-          ".conditional"
+          "#leoConditional"
         );
 
       if (conditional) {
 
         conditional.classList.toggle(
           "show",
-          input.value === "Sí" ||
-          input.value === "si" ||
-          input.value === "SI"
+          value === "Sí"
         );
 
       }

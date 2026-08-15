@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta
+    name="description"
+    content="Formulario de inscripción a RECREO — ¡Que Nunca Dejen de Ser Niños!"
+  >
+
+  <meta name="theme-color" content="#ff6b35">
+
+  <title>Entrá a RECREO 🧸</title>
+
+  <!-- TIPOGRAFÍAS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- ESTILOS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- FONDO ANIMADO -->
+  <div class="page-bg" aria-hidden="true">
+
+    <span class="blob blob-a"></span>
+    <span class="blob blob-b"></span>
+    <span class="blob blob-c"></span>
+    <span class="blob blob-d"></span>
+
+    <span class="float float-1">🧸</span>
+    <span class="float float-2">🎨</span>
+    <span class="float float-3">🎲</span>
+    <span class="float float-4">🪁</span>
+    <span class="float float-5">✨</span>
+    <span class="float float-6">🌈</span>
+
+  </div>
+
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="app-shell">
+
+    <!-- BARRA SUPERIOR -->
+    <header class="topbar">
+      <div class="step-copy">
+        <span id="stepLabel">ENTRADA</span>
+        <strong id="progressPercent">0%</strong>
+      </div>
+    </header>
+
+
+    <!-- BARRA DE PROGRESO -->
+    <div
+      class="progress-track"
+      aria-label="Progreso del formulario"
+    >
+
+      <div
+        class="progress-fill"
+        id="progressFill"
+      ></div>
+
+      <div class="progress-dots">
+
+        <span data-dot="0">🧸</span>
+        <i></i>
+
+        <span data-dot="1">🎨</span>
+        <i></i>
+
+        <span data-dot="2">🎲</span>
+        <i></i>
+
+        <span data-dot="3">🪁</span>
+        <i></i>
+
+        <span data-dot="4">💜</span>
+        <i></i>
+
+        <span data-dot="5">🎉</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- FORMULARIO -->
+    <form
+      id="recreoForm"
+      novalidate
+    >
+
+      <!-- PANTALLA 01 -->
+      <section
+        class="screen active"
+        data-screen="0"
+        aria-labelledby="screen1Title"
+      >
+
+        <div class="hero-card">
+
+          <div class="logo-orbit">
+            <span>🧸</span>
+            <span>🎨</span>
+            <span>🎲</span>
+            <span>🪁</span>
+            <span>✨</span>
+          </div>
+
+          <img
+            class="hero-logo"
+            src="assets/recreo-logo.png"
+            alt="RECREO"
+          >
+
+          <p class="tagline">
+            VOLVAMOS A RECREER Y RECREAR
+          </p>
+
+          <div class="eyebrow">
+            🧸 CONOCÉ EL RECREO
+          </div>
+
+          <h1 id="screen1Title">
+            ¡CONVERTITE EN RECREADOR/A!
+          </h1>
+
+          <p class="lead">
+            RECREO es una jornada especial por el Día del Niño, llena de juegos, actividades recreativas, educativas, artísticas y creativas, pensada para que niños y niñas de nuestra comunidad puedan jugar, aprender, crear, compartir y disfrutar su infancia. 🎨🎲✨
+          </p>
+
+          <p class="body-copy">
+            RECREO es impulsado por los Clubes Leo de Limpio y Encontremonos.
+            Para hacerlo posible, ¡Te necesitamos!
+          </p>
+
+          <div class="ready-note">
+            ¿Listo/a para sumarte?
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary btn-xl"
+            data-next
+          >
+            QUIERO SER RECREADOR/A
+            <span>→</span>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- PANTALLA 02 -->
+      <section
+        class="screen"
+        data-screen="1"
+        aria-labelledby="screen2Title"
+      >
+
+        <div class="section-heading">
+          <div>
+
+            <span class="eyebrow">
+              ✨ CONOCERTE
+            </span>
+
+            <h2 id="screen2Title">
+              Queremos conocerte, futuro RECREADOR/A.
+            </h2>
+
+          </div>
+        </div>
+
+
+        <div class="form-grid">
+
+          <label class="field-card">
+
+            <span>
+              👤 Tu nombre
+            </span>
+
+            <b>
+              Nombre y apellido*
+            </b>
+
+            <input
+              id="nombre_apellido"
+              name="nombre"
+              type="text"
+              autocomplete="name"
+              placeholder="Escribí tu nombre y apellido"
+              required
+            >
+
+          </label>
+
+
+          <label class="field-card">
+
+            <span>
+              🪪 Tu identidad
+            </span>
+
+            <b>
+              Número de cédula de identidad*
+            </b>
+
+            <input
+              id="cedul_identidad"
+              name="cedula"
+              inputmode="numeric"
+              placeholder="Ej.: 1234567"
+              required
+            >
+
+          </label>
+
+
+          <label class="field-card">
+
+            <span>
+              📱 ¿Cómo podemos contactarte?
+            </span>
+
+            <b>
+              Número de celular / WhatsApp*
+            </b>
+
+            <input
+              id="celular_whatsapp"
+              name="telefono"
+              type="tel"
+              autocomplete="tel"
+              placeholder="Ej.: 0981 123 456"
+              required
+            >
+
+          </label>
+
+
+          <label class="field-card">
+
+            <span>
+              📸 Tu mundo digital
+            </span>
+
+            <b>
+              Instagram
+            </b>
+
+            <input
+              id="instagram"
+              name="instagram"
+              type="text"
+              placeholder="@tuusuario"
+            >
+
+          </label>
+
+
+          <label class="field-card full">
+
+            <span>
+              📍 ¿De dónde venís?
+            </span>
+
+            <b>
+              Ciudad de procedencia*
+            </b>
+
+            <input
+              id="ciudad_procedencia"
+              name="ciudad"
+              type="text"
+              autocomplete="address-level2"
+              placeholder="Escribí tu ciudad"
+              required
+            >
+
+          </label>
+
+        </div>
+
+
+        <div class="nav-row">
+
+          <button
+            type="button"
+            class="btn btn-back"
+            data-prev
+          >
+            ← Volver
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-next
+          >
+            CONTINUAR
+            <span>→</span>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- PANTALLA 03 -->
+      <section
+        class="screen"
+        data-screen="2"
+        aria-labelledby="screen3Title"
+      >
+
+        <div class="section-heading centered">
+          <div>
+
+            <span class="eyebrow">
+              🌎 TU MUNDO
+            </span>
+
+            <h2 id="screen3Title">
+              Antes de entrar a RECREO queremos saber más de vos.
+            </h2>
+
+          </div>
+        </div>
+
+
+        <div class="question-card">
+
+          <h3>
+            ¿Formás parte de alguna organización,
+            institución, empresa, universidad, club o grupo?*
+          </h3>
+
+          <div class="choice-grid two">
+
+            <button
+              type="button"
+              class="choice-card"
+              data-choice="organizacion"
+              data-value="Sí"
+            >
+              <span>✨</span>
+              <strong>SÍ</strong>
+            </button>
+
+            <button
+              type="button"
+              class="choice-card"
+              data-choice="organizacion"
+              data-value="No"
+            >
+              <span>🌱</span>
+              <strong>NO</strong>
+            </button>
+
+          </div>
+
+
+          <div
+            class="conditional"
+            id="orgConditional"
+          >
+
+            <label class="field-card">
+
+              <b>
+                ¡Contanos un poquito más!
+              </b>
+
+              <span>
+                ¿De cuál/es?
+              </span>
+
+              <input
+                name="forma_parte_organizacion"
+                type="text"
+                placeholder="Escribí de cuál/es formás parte"
+              >
+
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <div class="question-card leo-card">
+
+          <h3>
+            🦁 ¿Formás parte de un Club Leo?*
+          </h3>
+
+          <div class="choice-grid two">
+
+            <button
+              type="button"
+              class="choice-card"
+              data-choice="clubLeo"
+              data-value="Sí"
+            >
+              <span>🦁</span>
+              <strong>SÍ</strong>
+            </button>
+
+            <button
+              type="button"
+              class="choice-card"
+              data-choice="clubLeo"
+              data-value="No"
+            >
+              <span>🌱</span>
+              <strong>NO</strong>
+            </button>
+
+          </div>
+
+
+          <div
+            class="conditional"
+            id="leoConditional"
+          >
+
+            <label class="field-card">
+
+              <b>
+                ¿A qué Club Leo pertenecés?
+              </b>
+
+              <input
+                name="clubLeo"
+                type="text"
+                placeholder="Nombre del Club Leo"
+              >
+
+            </label>
+
+
+            <div class="district-picker">
+
+              <span class="district-title">
+                ¿A qué Distrito pertenecés?
+              </span>
+
+              <div class="district-grid">
+
+                <button
+                  type="button"
+                  class="district"
+                  data-choice="distrito"
+                  data-value="M1"
+                >
+                  M1
+                </button>
+
+                <button
+                  type="button"
+                  class="district"
+                  data-choice="distrito"
+                  data-value="M2"
+                >
+                  M2
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="nav-row">
+
+          <button
+            type="button"
+            class="btn btn-back"
+            data-prev
+          >
+            ← Volver
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-next
+          >
+            CONTINUAR
+            <span>→</span>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- PANTALLA 04 -->
+      <section
+        class="screen"
+        data-screen="3"
+        aria-labelledby="screen4Title"
+      >
+
+        <div class="notebook-bg">
+
+          <div class="section-heading">
+            <div>
+
+              <h2 id="screen4Title">
+                💭 ¿QUÉ ESPERÁS DE RECREO?
+              </h2>
+
+            </div>
+          </div>
+
+
+          <p class="intro">
+            Queremos conocer qué esperás encontrar,
+            aprender, compartir o vivir durante esta experiencia.
+          </p>
+
+
+          <label class="textarea-card">
+
+            <span>
+              💭 ¿Qué esperás de RECREO?*
+            </span>
+
+            <textarea
+              name="expectativas"
+              rows="5"
+              placeholder="No hay respuestas correctas..."
+              required
+            ></textarea>
+
+          </label>
+
+
+          <label class="textarea-card">
+
+            <span>
+              🌱 ¿Qué te gustaría aportar como RECREADOR/A?
+            </span>
+
+            <textarea
+              name="aporte"
+              rows="5"
+              placeholder="Contanos qué te gustaría aportar..."
+            ></textarea>
+
+          </label>
+
+
+          <div class="idea-chips">
+
+            <button
+              type="button"
+              class="idea-chip"
+              data-insert="expectativas"
+              data-text="Mi creatividad."
+            >
+              Mi creatividad.
+            </button>
+
+            <button
+              type="button"
+              class="idea-chip"
+              data-insert="expectativas"
+              data-text="Energía y alegría."
+            >
+              Energía y alegría.
+            </button>
+
+            <button
+              type="button"
+              class="idea-chip"
+              data-insert="expectativas"
+              data-text="Juegos nuevos."
+            >
+              Juegos nuevos.
+            </button>
+
+            <button
+              type="button"
+              class="idea-chip"
+              data-insert="expectativas"
+              data-text="Mi experiencia trabajando con niños."
+            >
+              Mi experiencia trabajando con niños.
+            </button>
+
+            <button
+              type="button"
+              class="idea-chip"
+              data-insert="expectativas"
+              data-text="Ganas de ayudar."
+            >
+              Ganas de ayudar.
+            </button>
+
+          </div>
+
+
+          <div class="nav-row">
+
+            <button
+              type="button"
+              class="btn btn-back"
+              data-prev
+            >
+              ← Volver
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-next
+            >
+              CONTINUAR
+              <span>→</span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- PANTALLA 05 -->
+      <section
+        class="screen"
+        data-screen="4"
+        aria-labelledby="screen5Title"
+      >
+
+        <div class="section-heading centered">
+          <div>
+
+            <span class="eyebrow">
+              🎒 LA MOCHILA
+            </span>
+
+            <h2 id="screen5Title">
+              ¿QUÉ TRAÉS A LA MOCHILA?
+            </h2>
+
+          </div>
+        </div>
+
+
+        <p class="intro centered">
+
+          Todos tenemos algo para compartir.
+          <br>
+
+          <strong>
+            ¿Qué traés con vos como RECREADOR/A?
+          </strong>
+
+          <br>
+
+          Seleccioná todas las opciones que te representen.
+
+        </p>
+
+
+        <div class="skill-grid">
+
+          <button
+            type="button"
+            class="skill-card"
+            data-skill="Creatividad"
+          >
+            <span>🎨</span>
+            <b>Creatividad</b>
+            <i>✓</i>
+          </button>
+
+          <button
+            type="button"
+            class="skill-card"
+            data-skill="Comunicación"
+          >
+            <span>📣</span>
+            <b>Comunicación</b>
+            <i>✓</i>
+          </button>
+
+          <button
+            type="button"
+            class="skill-card"
+            data-skill="Tecnología e innovación"
+          >
+            <span>💻</span>
+            <b>Tecnología e innovación</b>
+            <i>✓</i>
+          </button>
+
+          <button
+            type="button"
+            class="skill-card"
+            data-skill="Juegos y dinámicas"
+          >
+            <span>🎲</span>
+            <b>Juegos y dinámicas</b>
+            <i>✓</i>
+          </button>
+
+          <button
+            type="button"
+            class="skill-card"
+            data-skill="Trabajo en equipo"
+          >
+            <span>🤝</span>
+            <b>Trabajo en equipo</b>
+            <i>✓</i>
+          </button>
+
+          <button
+            type="button"
+            class="skill-card"
+            data-skill="Escucha y acompañamiento"
+          >
+            <span>❤️</span>
+            <b>Escucha y acompañamiento</b>
+            <i>✓</i>
+          </button>
+
+          <button
+            type="button"
+            class="skill-card"
+            data-skill="Otra"
+          >
+            <span>✨</span>
+            <b>Otra</b>
+            <i>✓</i>
+          </button>
+
+        </div>
+
+
+        <label class="field-card extra-field">
+
+          <b>
+            ¿Hay algo más que quieras poner dentro de tu mochila?
+          </b>
+
+          <input
+            name="otraMochila"
+            type="text"
+            placeholder="Algo más que quieras compartir..."
+          >
+
+        </label>
+
+
+        <div class="nav-row">
+
+          <button
+            type="button"
+            class="btn btn-back"
+            data-prev
+          >
+            ← Volver
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-next
+          >
+            CONTINUAR
+            <span>→</span>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- PANTALLA 06 -->
+      <section
+        class="screen"
+        data-screen="5"
+        aria-labelledby="screen6Title"
+      >
+
+        <div class="inspiration-card">
+
+          <div class="section-heading centered">
+            <div>
+
+              <span class="eyebrow">
+                🎨 ¿QUÉ SIGNIFICA SER RECREADOR?
+              </span>
+
+              <h2 id="screen6Title">
+                SER RECREADOR/A ES…
+              </h2>
+
+            </div>
+          </div>
+
+
+          <p class="intro centered">
+            Ser parte del equipo que hará posible que RECREO suceda.
+          </p>
+
+
+          <div class="meaning-grid">
+
+            <article>
+              <span>🎲</span>
+              <b>Juegos y dinámicas recreativas</b>
+            </article>
+
+            <article>
+              <span>🎨</span>
+              <b>Actividades creativas</b>
+            </article>
+
+            <article>
+              <span>🧠</span>
+              <b>Experiencias educativas y lúdicas</b>
+            </article>
+
+            <article>
+              <span>🎭</span>
+              <b>Espacios de expresión y participación</b>
+            </article>
+
+            <article>
+              <span>🤝</span>
+              <b>Actividades de integración y cooperación</b>
+            </article>
+
+            <article>
+              <span>🎉</span>
+              <b>Momentos de recreación y celebración</b>
+            </article>
+
+          </div>
+
+
+          <div class="needs-grid">
+
+            <div>
+
+              <h3>
+                NO NECESITÁS...
+              </h3>
+
+              <p>❌ Ser docente</p>
+              <p>❌ Ser animador</p>
+              <p>❌ Ser especialista</p>
+
+            </div>
+
+
+            <div>
+
+              <h3>
+                SÍ NECESITAMOS...
+              </h3>
+
+              <p>❤️ Compromiso</p>
+              <p>🤝 Respeto</p>
+              <p>🫶 Responsabilidad</p>
+              <p>✨ Predisposición</p>
+              <p>👥 Trabajo en equipo</p>
+              <p>🧸 Muchas ganas de recrear</p>
+
+            </div>
+
+          </div>
+
+
+          <blockquote>
+
+            Un RECREADOR no viene solamente a ayudar.
+            <br>
+
+            <strong>
+              Viene a hacer posible el recreo de alguien más. ❤️
+            </strong>
+
+          </blockquote>
+
+
+          <div class="nav-row">
+
+            <button
+              type="button"
+              class="btn btn-back"
+              data-prev
+            >
+              ← Volver
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-next
+            >
+              CONTINUAR
+              <span>→</span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- PANTALLA 07 -->
+      <section
+        class="screen"
+        data-screen="6"
+        aria-labelledby="screen7Title"
+      >
+
+        <div class="ticket-wrap">
+
+          <div class="section-heading">
+            <div>
+
+              <span class="eyebrow">
+                🪁 PREPARATE PARA RECREO
+              </span>
+
+              <h2 id="screen7Title">
+                TALLER DE LIDERAZGO PARA RECREADORES
+              </h2>
+
+            </div>
+          </div>
+
+
+          <div class="event-date">
+
+            <span>
+              DOMINGO 23
+            </span>
+
+            <strong>
+              14:00 H
+            </strong>
+
+          </div>
+
+
+          <div class="ticket">
+
+            <div>🧸 PROPÓSITO DE RECREO</div>
+            <div>🤝 NUESTRO ROL</div>
+            <div>🎲 ACTIVIDADES</div>
+            <div>👥 EQUIPOS</div>
+            <div>❤️ ACOMPAÑAMIENTO</div>
+            <div>📋 INDICACIONES</div>
+
+          </div>
+
+
+          <p class="ticket-note">
+
+            Un encuentro para prepararnos,
+            conocernos y hacer que la experiencia
+            de RECREO sea increíble.
+
+          </p>
+
+
+          <div class="nav-row">
+
+            <button
+              type="button"
+              class="btn btn-back"
+              data-prev
+            >
+              ← Volver
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-next
+            >
+              CONTINUAR
+              <span>→</span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- PANTALLA 08 -->
+      <section
+        class="screen"
+        data-screen="7"
+        aria-labelledby="screen8Title"
+      >
+
+        <div class="commitment-card">
+
+          <div class="section-heading centered">
+            <div>
+
+              <span class="eyebrow">
+                💜 NUESTRO COMPROMISO
+              </span>
+
+              <h2 id="screen8Title">
+                SER RECREADOR/A ES UN COMPROMISO.
+              </h2>
+
+            </div>
+          </div>
+
+
+          <div class="commitment-list">
+
+            <label>
+              <input
+                type="checkbox"
+                name="compromiso"
+                value="Participar del Taller de Liderazgo."
+              >
+              <span>
+                Participar del Taller de Liderazgo.
+              </span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="compromiso"
+                value="Participar responsablemente de RECREO."
+              >
+              <span>
+                Participar responsablemente de RECREO.
+              </span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="compromiso"
+                value="Respetar a niños, compañeros y coordinadores."
+              >
+              <span>
+                Respetar a niños, compañeros y coordinadores.
+              </span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="compromiso"
+                value="Cumplir las indicaciones de organización y seguridad."
+              >
+              <span>
+                Cumplir las indicaciones de organización y seguridad.
+              </span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="compromiso"
+                value="Trabajar desde el respeto, empatía y compañerismo."
+              >
+              <span>
+                Trabajar desde el respeto, empatía y compañerismo.
+              </span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="compromiso"
+                value="Cuidar espacios, materiales y recursos."
+              >
+              <span>
+                Cuidar espacios, materiales y recursos.
+              </span>
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                name="compromiso"
+                value="Representar los valores de RECREO."
+              >
+              <span>
+                Representar los valores de RECREO.
+              </span>
+            </label>
+
+          </div>
+
+
+          <div class="receive">
+
+            <h3>
+              🎁 ¿Y QUÉ RECIBÍS A CAMBIO?
+            </h3>
+
+            <div class="receive-grid">
+
+              <span>✨ Una experiencia inolvidable</span>
+              <span>🤝 Nuevos amigos</span>
+              <span>💡 Nuevos aprendizajes</span>
+              <span>🌱 La oportunidad de aportar</span>
+              <span>🧡 La satisfacción de recrear momentos imborrables</span>
+              <span>📜 Certificado de participación</span>
+
+            </div>
+
+          </div>
+
+
+          <div class="final-call">
+            🚀 Y FINALMENTE...
+          </div>
+
+
+          <p class="final-copy">
+
+            Completá tu inscripción y preparate
+            para jugar, crear, aprender, compartir
+            y reencontrarte con la infancia.
+
+          </p>
+
+
+          <div class="nav-row">
+
+            <button
+              type="button"
+              class="btn btn-back"
+              data-prev
+            >
+              ← Volver
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-submit"
+            >
+              CONFIRMAR INSCRIPCIÓN 🎉
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </form>
+
+
+    <!-- MINI LOGOS -->
+    <footer
+      class="sponsor-bar"
+      aria-label="Organizaciones invitantes"
+    >
+
+      <span class="sponsor-title">
+        INVITAN
+      </span>
+
+      <div class="sponsor-logos">
+
+        <div class="mini-logo">
+          <img
+            src="assets/logo-leones.png"
+            alt="Leones"
+          >
+        </div>
+
+        <div class="mini-logo">
+          <img
+            src="assets/logo-leo.png"
+            alt="Clubes Leo"
+          >
+        </div>
+
+        <div class="mini-logo">
+          <img
+            src="assets/logo-encontremonos.png"
+            alt="Encontrémonos"
+          >
+        </div>
+
+      </div>
+
+    </footer>
+
+  </main>
+
+
+  <!-- TRANSICIÓN ENTRE PANTALLAS -->
+  <div
+    class="transition-overlay"
+    id="transitionOverlay"
+    aria-hidden="true"
+  >
+
+    <div>
+
+      <div class="transition-stars">
+        🧸　→　🎨　→　🪁
+      </div>
+
+      <strong>
+        ¡Vamos!
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- PANTALLA FINAL -->
+  <div
+    class="success-screen"
+    id="successScreen"
+    aria-hidden="true"
+  >
+
+    <div
+      class="confetti"
+      id="confetti"
+    ></div>
+
+
+    <!-- LOGO DE RECREO -->
+    <div class="success-mascot">
+      <img
+        src="assets/recreo-logo.png"
+        alt="RECREO"
+      >
+    </div>
+
+
+    <h2>
+      ¡YA SOS PARTE DE RECREO!
+    </h2>
+
+
+    <p>
+      Tu inscripción fue enviada correctamente.
+    </p>
+
+
+    <div class="success-dates">
+
+      <div>
+
+        <span>
+          🧠 DOMINGO 23
+        </span>
+
+        <b>
+          14:00 H
+        </b>
+
+        <small>
+          Taller de Liderazgo para RECREADORES
+        </small>
+
+      </div>
+
+
+      <div>
+
+        <span>
+          🪁 DOMINGO 30
+        </span>
+
+        <b>
+          13:30 H
+        </b>
+
+        <small>
+          RECREO
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <p class="success-slogan">
+
+      VOLVAMOS...
+      <br>
+
+      <strong>
+        A RECREER Y RECREAR. ✨
+      </strong>
+
+    </p>
+
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="closeSuccess"
+    >
+      ¡QUÉ EMOCIÓN! 🧸
+    </button>
+
+  </div>
+
+
+  <!-- MENSAJES -->
+  <div
+    class="toast"
+    id="toast"
+    role="alert"
+  ></div>
+
+
+  <!-- JAVASCRIPT -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

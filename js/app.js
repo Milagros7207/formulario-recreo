@@ -6,8 +6,8 @@
 // SUPABASE
 // =========================================================
 
-const SUPABASE_URL = "TU_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "TU_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://gdyjouqlbchxnionizbj.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkeWpvdXFsYmNoeG5pb25pemJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODU4MTQsImV4cCI6MjEwMTQ2MTgxNH0.80EPEAz3NZ0K7cOIM1_B3rG62GE1ZvLjEbydTLEAhVk";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,

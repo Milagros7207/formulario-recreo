@@ -3,7 +3,7 @@
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-    const supabase = supabase.createClient('https://gdyjouqlbchxnionizbj.supabase.co', 'sb_publishable_Pw78XnAc6Sb-wfEZ60-VwQ_85fZ4yN8');
+    const supabase = window.supabase.createClient('https://gdyjouqlbchxnionizbj.supabase.co', 'sb_publishable_Pw78XnAc65b-wFEZ68-WQ_85fZ4ynB');
     const form = document.getElementById("recreoForm");
   const screens = [...document.querySelectorAll(".screen")];
 

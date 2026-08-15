@@ -3,7 +3,7 @@
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-    const supabase = window.supabase.createClient('https://gdyjouqlbchxnionizbj.supabase.co', 'sb_publishable_Pw78XnAc65b-wFEZ68-WQ_85fZ4ynB');
+    const supabase = window.supabase.createClient('https://gdyjouqlbchxnionizbj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkeWpvdXFsYmNoeG5pb25pemJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODU4MTQsImV4cCI6MjEwMTQ2MTgxNH0.80EPEAz3NZ0K7cOIM1_B3rG62GE1ZvLjEbydTLEAhVk');
     const form = document.getElementById("recreoForm");
   const screens = [...document.querySelectorAll(".screen")];
 

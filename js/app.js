@@ -33,6 +33,7 @@ const progressDots = [...document.querySelectorAll(".progress-dots span")];
 const stepNumber = document.querySelector(".step-copy strong");
 
 const form = document.querySelector("#recreoForm");
+const confetti = document.querySelector("#confetti");
 
 let currentScreen = 0;
 
@@ -720,7 +721,6 @@ function showSuccessScreen(data) {
 
 function createConfetti() {
   if (!confetti) return;
-
   confetti.innerHTML = "";
 
   const symbols = [
@@ -788,39 +788,6 @@ confettiStyle.textContent = `
 `;
 
 document.head.appendChild(confettiStyle);
-
-// =========================================================
-// CONFETI
-// =========================================================
-
-function createConfetti() {
-  const container = document.querySelector(".confetti");
-
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  const pieces = 100;
-
-  for (let i = 0; i < pieces; i++) {
-    const piece = document.createElement("span");
-
-    piece.className = "confetti-piece";
-
-    piece.style.left = `${Math.random() * 100}%`;
-
-    piece.style.animationDuration =
-      `${3 + Math.random() * 4}s`;
-
-    piece.style.animationDelay =
-      `${Math.random() * 1.5}s`;
-
-    piece.style.transform =
-      `rotate(${Math.random() * 360}deg)`;
-
-    container.appendChild(piece);
-  }
-}
 
 
 // =========================================================

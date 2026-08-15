@@ -566,23 +566,19 @@ document.addEventListener("DOMContentLoaded", () => {
       ========================================================
     */
 
-    try {
-      /*
-       * Si todavía no colocaste la URL de tu backend,
-       * dejamos el formulario funcionando localmente.
-       *
-       * Cuando tengas tu endpoint, reemplazá esta parte
-       * por el fetch indicado arriba.
-       */
+try {
+      const { error } = await supabase
+        .from('recreo_registros')
+        .insert([data]);
 
-      await new Promise((resolve) =>
-        setTimeout(resolve, 500)
-      );
+      if (error) {
+        throw error;
+      }
 
       showSuccessScreen(data);
 
     } catch (error) {
-      console.error(error);
+      console.error("Error al guardar en Supabase:", error);
 
       showToast(
         "No pudimos enviar la inscripción. Intentá nuevamente."

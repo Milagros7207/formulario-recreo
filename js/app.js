@@ -127,7 +127,7 @@ document.querySelectorAll("[data-next]").forEach(button => {
 // BOTONES ATRÁS
 // =========================================================
 
-document.querySelectorAll("[data-back]").forEach(button => {
+document.querySelectorAll("[data-prev]").forEach(button => {
   button.addEventListener("click", (event) => {
     event.preventDefault();
 
@@ -136,7 +136,6 @@ document.querySelectorAll("[data-back]").forEach(button => {
     }
   });
 });
-
 
 // =========================================================
 // VALIDACIÓN DE PANTALLA

@@ -128,8 +128,12 @@ document.querySelectorAll("[data-next]").forEach(button => {
 // =========================================================
 
 document.querySelectorAll("[data-back]").forEach(button => {
-  button.addEventListener("click", () => {
-    showScreen(currentScreen - 1);
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    if (currentScreen > 0) {
+      showScreen(currentScreen - 1);
+    }
   });
 });
 

@@ -1,236 +1,759 @@
-// Inicialización de Supabase
-const SUPABASE_URL = "https://TU_SUPABASE_URL.supabase.co"; // Reemplazar con tu URL
-const SUPABASE_KEY = "TU_SUPABASE_ANON_KEY"; // Reemplazar con tu Key pública
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+/* =========================================================
+   RECREO — APP.JS
+   ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
-  let currentScreen = 1;
-  const totalScreens = 4;
+// =========================================================
+// SUPABASE
+// =========================================================
 
-  const form = document.getElementById("multiStepForm");
-  const btnPrev = document.getElementById("btnPrev");
-  const btnNext = document.getElementById("btnNext");
-  const btnSubmit = document.getElementById("btnSubmit");
-  const toast = document.getElementById("toast");
+const SUPABASE_URL = "TU_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "TU_SUPABASE_ANON_KEY";
 
-  // Manejo de visibilidad para campos condicionales
-  form.addEventListener("change", (e) => {
-    if (e.target.name === "organizacion") {
-      const field = document.getElementById("field-organizaciones");
-      if (e.target.value === "Sí") {
-        field.classList.remove("hidden");
-      } else {
-        field.classList.add("hidden");
-      }
-    }
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-    if (e.target.name === "clubLeo") {
-      const field = document.getElementById("field-club-leo");
-      if (e.target.value === "Sí") {
-        field.classList.remove("hidden");
-      } else {
-        field.classList.add("hidden");
-      }
-    }
+
+// =========================================================
+// ELEMENTOS PRINCIPALES
+// =========================================================
+
+const screens = [...document.querySelectorAll(".screen")];
+const progressFill = document.querySelector(".progress-fill");
+const progressDots = [...document.querySelectorAll(".progress-dots span")];
+const stepNumber = document.querySelector(".step-copy strong");
+
+const form = document.querySelector("#recreoForm");
+
+let currentScreen = 0;
+
+
+// =========================================================
+// DATOS DEL FORMULARIO
+// =========================================================
+
+const formData = {
+  organizacion: null,
+  clubLeo: null,
+  distrito: null,
+  habilidades: []
+};
+
+
+// =========================================================
+// MOSTRAR PANTALLA
+// =========================================================
+
+function showScreen(index) {
+  if (index < 0 || index >= screens.length) return;
+
+  screens.forEach((screen, i) => {
+    screen.classList.toggle("active", i === index);
   });
 
-  // Navegación
-  btnNext.addEventListener("click", () => {
-    if (validateScreen(currentScreen)) {
-      if (currentScreen < totalScreens) {
-        currentScreen++;
-        updateScreenView();
-      }
-    }
+  currentScreen = index;
+
+  updateProgress();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+// =========================================================
+// PROGRESO
+// =========================================================
+
+function updateProgress() {
+  const total = screens.length;
+
+  const percentage =
+    total <= 1
+      ? 100
+      : (currentScreen / (total - 1)) * 100;
+
+  if (progressFill) {
+    progressFill.style.width = `${percentage}%`;
+  }
+
+  progressDots.forEach((dot, index) => {
+    dot.classList.toggle(
+      "active",
+      index === currentScreen
+    );
+
+    dot.classList.toggle(
+      "completed",
+      index < currentScreen
+    );
   });
 
-  btnPrev.addEventListener("click", () => {
-    if (currentScreen > 1) {
-      currentScreen--;
-      updateScreenView();
-    }
-  });
-
-  function updateScreenView() {
-    // Actualizar pantallas
-    document.querySelectorAll(".screen").forEach((screen, idx) => {
-      screen.classList.toggle("active", idx + 1 === currentScreen);
-    });
-
-    // Actualizar Stepper
-    document.querySelectorAll(".stepper .step").forEach((step, idx) => {
-      const stepNum = idx + 1;
-      step.classList.toggle("active", stepNum === currentScreen);
-      step.classList.toggle("completed", stepNum < currentScreen);
-    });
-
-    // Actualizar botones
-    btnPrev.disabled = currentScreen === 1;
-
-    if (currentScreen === totalScreens) {
-      btnNext.classList.add("hidden");
-      btnSubmit.classList.remove("hidden");
-    } else {
-      btnNext.classList.remove("hidden");
-      btnSubmit.classList.add("hidden");
-    }
+  if (stepNumber) {
+    stepNumber.textContent =
+      `${currentScreen + 1}/${total}`;
   }
+}
 
-  // Validación por pantalla
-  function validateScreen(screenNumber) {
-    let valid = true;
-    clearErrors();
 
-    const screenEl = document.getElementById(`screen-${screenNumber}`);
-    const formData = collectFormData();
+// =========================================================
+// BOTONES SIGUIENTE
+// =========================================================
 
-    if (screenNumber === 1) {
-      const reqs = ["nombreCompleto", "cedula", "fechaNacimiento", "talle", "ciudad"];
-      reqs.forEach((field) => {
-        if (!formData[field]) {
-          markInputError(screenEl.querySelector(`[name="${field}"]`), "Este campo es requerido.");
-          valid = false;
-        }
-      });
+document.querySelectorAll("[data-next]").forEach(button => {
+  button.addEventListener("click", () => {
+
+    if (!validateCurrentScreen()) {
+      return;
     }
 
-    if (screenNumber === 2) {
-      if (!formData.whatsapp) {
-        markInputError(screenEl.querySelector('[name="whatsapp"]'), "Ingresá tu WhatsApp.");
-        valid = false;
-      }
-      if (!formData.email || !formData.email.includes("@")) {
-        markInputError(screenEl.querySelector('[name="email"]'), "Ingresá un correo válido.");
-        valid = false;
-      }
-    }
-
-    if (screenNumber === 3) {
-      if (!formData.organizacion) {
-        showToast("Seleccioná si formás parte de alguna organización.");
-        valid = false;
-      } else if (formData.organizacion === "Sí") {
-        const organizaciones = form.querySelector('[name="forma_parte_organizacion"]');
-        if (!organizaciones || !organizaciones.value.trim()) {
-          markInputError(organizaciones, "Contanos de cuál/es formás parte.");
-          valid = false;
-        }
-      }
-
-      if (!formData.clubLeo) {
-        showToast("Seleccioná si formás parte del Club Leo.");
-        valid = false;
-      } else if (formData.clubLeo === "Sí") {
-        const clubLeoNombre = form.querySelector('[name="clubLeoNombre"]');
-        if (!clubLeoNombre || !clubLeoNombre.value.trim()) {
-          markInputError(clubLeoNombre, "Ingresá el nombre de tu Club Leo.");
-          valid = false;
-        }
-        if (!formData.distrito) {
-          showToast("Seleccioná tu Distrito.");
-          valid = false;
-        }
-      }
-    }
-
-    if (screenNumber === 4) {
-      if (!formData.traslado) {
-        showToast("Seleccioná cómo pensás trasladarte.");
-        valid = false;
-      }
-      if (!formData.compromiso_participacion || !formData.compromiso_reglamento) {
-        showToast("Debes aceptar los compromisos para continuar.");
-        valid = false;
-      }
-    }
-
-    return valid;
-  }
-
-  function markInputError(inputEl, message) {
-    if (!inputEl) return;
-    
-    // Si es radio button, marcar el contenedor
-    if (inputEl.length) {
-      inputEl = inputEl[0].closest(".form-group");
-    } else {
-      inputEl.classList.add("input-error");
-    }
-
-    const parent = inputEl.closest(".form-group") || inputEl.parentElement;
-    let err = parent.querySelector(".field-error-msg");
-    if (!err) {
-      err = document.createElement("div");
-      err.className = "field-error-msg";
-      parent.appendChild(err);
-    }
-    err.textContent = message;
-  }
-
-  function clearErrors() {
-    document.querySelectorAll(".input-error").forEach((el) => el.classList.remove("input-error"));
-    document.querySelectorAll(".field-error-msg").forEach((el) => el.remove());
-  }
-
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.remove("hidden");
-    setTimeout(() => {
-      toast.classList.add("hidden");
-    }, 3000);
-  }
-
-  function collectFormData() {
-    const data = {};
-    const elements = form.querySelectorAll("input, textarea, select");
-
-    elements.forEach((el) => {
-      if (!el.name) return;
-
-      if (el.type === "radio") {
-        if (el.checked) data[el.name] = el.value;
-      } else if (el.type === "checkbox") {
-        data[el.name] = el.checked;
-      } else {
-        data[el.name] = el.value;
-      }
-    });
-
-    return data;
-  }
-
-  // Envío de Formulario a Supabase
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    if (!validateScreen(currentScreen)) return;
-
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = "Guardando...";
-
-    const formData = collectFormData();
-
-    try {
-      if (!supabase) {
-        throw new Error("Supabase no está configurado correctamente.");
-      }
-
-      const { data, error } = await supabase
-        .from("recreo_registros")
-        .insert([formData]);
-
-      if (error) throw error;
-
-      showToast("¡Inscripción completada con éxito! 🎉");
-      form.reset();
-      currentScreen = 1;
-      updateScreenView();
-    } catch (err) {
-      console.error("Error al guardar:", err);
-      showToast("Ocurrió un error al enviar tu inscripción. Intentalo de nuevo.");
-    } finally {
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = "¡Enviar Inscripción! 🚀";
-    }
+    showScreen(currentScreen + 1);
   });
 });
+
+
+// =========================================================
+// BOTONES ATRÁS
+// =========================================================
+
+document.querySelectorAll("[data-back]").forEach(button => {
+  button.addEventListener("click", () => {
+    showScreen(currentScreen - 1);
+  });
+});
+
+
+// =========================================================
+// VALIDACIÓN DE PANTALLA
+// =========================================================
+
+function validateCurrentScreen() {
+
+  const screen = screens[currentScreen];
+
+  if (!screen) return true;
+
+  const requiredInputs =
+    [...screen.querySelectorAll(
+      "input[required], textarea[required]"
+    )];
+
+  let valid = true;
+
+  requiredInputs.forEach(input => {
+
+    if (!input.value.trim()) {
+
+      input.classList.add("input-error");
+
+      valid = false;
+
+    } else {
+
+      input.classList.remove("input-error");
+
+    }
+
+  });
+
+  // Validación de radios obligatorios
+  const radioGroups = {};
+
+  screen
+    .querySelectorAll(
+      'input[type="radio"][required]'
+    )
+    .forEach(radio => {
+
+      if (!radioGroups[radio.name]) {
+        radioGroups[radio.name] = [];
+      }
+
+      radioGroups[radio.name].push(radio);
+    });
+
+  Object.values(radioGroups).forEach(group => {
+
+    const checked = group.some(
+      radio => radio.checked
+    );
+
+    if (!checked) {
+      valid = false;
+    }
+
+  });
+
+  if (!valid) {
+    showToast("Completá los campos obligatorios antes de continuar.");
+  }
+
+  return valid;
+}
+
+
+// =========================================================
+// REMOVER ERROR AL ESCRIBIR
+// =========================================================
+
+document.addEventListener("input", event => {
+
+  if (
+    event.target.matches(
+      "input, textarea"
+    )
+  ) {
+    event.target.classList.remove(
+      "input-error"
+    );
+  }
+
+});
+
+
+// =========================================================
+// OPCIONES DE ELECCIÓN
+// =========================================================
+
+document.querySelectorAll(".choice-card").forEach(card => {
+
+  card.addEventListener("click", () => {
+
+    const group =
+      card.closest(".choice-grid");
+
+    if (!group) return;
+
+    group
+      .querySelectorAll(".choice-card")
+      .forEach(item => {
+        item.classList.remove("selected");
+      });
+
+    card.classList.add("selected");
+
+    const input =
+      card.querySelector("input");
+
+    if (input) {
+      input.checked = true;
+      input.dispatchEvent(
+        new Event("change", {
+          bubbles: true
+        })
+      );
+    }
+
+  });
+
+});
+
+
+// =========================================================
+// ORGANIZACIÓN
+// =========================================================
+
+document
+  .querySelectorAll(
+    'input[name="organizacion"]'
+  )
+  .forEach(input => {
+
+    input.addEventListener("change", () => {
+
+      formData.organizacion =
+        input.value;
+
+    });
+
+  });
+
+
+// =========================================================
+// CLUB LEO
+// =========================================================
+
+document
+  .querySelectorAll(
+    'input[name="clubLeo"]'
+  )
+  .forEach(input => {
+
+    input.addEventListener("change", () => {
+
+      formData.clubLeo =
+        input.value;
+
+      const conditional =
+        document.querySelector(
+          ".conditional"
+        );
+
+      if (conditional) {
+
+        conditional.classList.toggle(
+          "show",
+          input.value === "Sí" ||
+          input.value === "si" ||
+          input.value === "SI"
+        );
+
+      }
+
+    });
+
+  });
+
+
+// =========================================================
+// DISTRITO
+// =========================================================
+
+document
+  .querySelectorAll(".district")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      document
+        .querySelectorAll(".district")
+        .forEach(item => {
+          item.classList.remove(
+            "selected"
+          );
+        });
+
+      button.classList.add("selected");
+
+      formData.distrito =
+        button.dataset.district ||
+        button.textContent.trim();
+
+    });
+
+  });
+
+
+// =========================================================
+// HABILIDADES
+// =========================================================
+
+document
+  .querySelectorAll(".skill-card")
+  .forEach(card => {
+
+    card.addEventListener("click", () => {
+
+      const skill =
+        card.dataset.skill ||
+        card.querySelector("b")?.textContent.trim();
+
+      card.classList.toggle("selected");
+
+      if (!skill) return;
+
+      if (card.classList.contains("selected")) {
+
+        if (
+          !formData.habilidades.includes(skill)
+        ) {
+          formData.habilidades.push(skill);
+        }
+
+      } else {
+
+        formData.habilidades =
+          formData.habilidades.filter(
+            item => item !== skill
+          );
+
+      }
+
+    });
+
+  });
+
+
+// =========================================================
+// CHIPS DE IDEAS
+// =========================================================
+
+document
+  .querySelectorAll(".idea-chip")
+  .forEach(chip => {
+
+    chip.addEventListener("click", () => {
+
+      const text =
+        chip.textContent.trim();
+
+      const textarea =
+        document.querySelector(
+          'textarea[name="que_te_gustaria_aportar"]'
+        ) ||
+        document.querySelector(
+          "#que_te_gustaria_aportar"
+        );
+
+      if (!textarea) return;
+
+      if (!textarea.value.trim()) {
+        textarea.value = text;
+      } else {
+        textarea.value +=
+          `, ${text}`;
+      }
+
+      textarea.dispatchEvent(
+        new Event("input", {
+          bubbles: true
+        })
+      );
+
+    });
+
+  });
+
+
+// =========================================================
+// RECOLECTAR DATOS
+// =========================================================
+
+function collectFormData() {
+
+  const getValue = (...selectors) => {
+
+    for (const selector of selectors) {
+
+      const element =
+        form?.querySelector(selector) ||
+        document.querySelector(selector);
+
+      if (element) {
+        return element.value.trim() || null;
+      }
+
+    }
+
+    return null;
+  };
+
+
+  // Compromisos
+  const compromisos = [
+    ...document.querySelectorAll(
+      'input[name="compromiso"]:checked'
+    )
+  ].map(input => input.value);
+
+
+  // Habilidades
+  const habilidades =
+    [...formData.habilidades];
+
+
+  return {
+
+    nombre_apellido:
+      getValue(
+        '[name="nombre_apellido"]',
+        "#nombre_apellido",
+        '[name="nombre"]'
+      ),
+
+    cedula_identidad:
+      getValue(
+        '[name="cedula_identidad"]',
+        "#cedula_identidad",
+        '[name="cedula"]'
+      ),
+
+    celular_whatsapp:
+      getValue(
+        '[name="celular_whatsapp"]',
+        "#celular_whatsapp",
+        '[name="telefono"]'
+      ),
+
+    instagram:
+      getValue(
+        '[name="instagram"]',
+        "#instagram"
+      ),
+
+    ciudad_procedencia:
+      getValue(
+        '[name="ciudad_procedencia"]',
+        "#ciudad_procedencia",
+        '[name="ciudad"]'
+      ),
+
+    "forma_parte_organización":
+      formData.organizacion,
+
+    forma_parte_club_leo:
+      formData.clubLeo,
+
+    nombre_club_leo:
+      getValue(
+        '[name="nombre_club_leo"]',
+        "#nombre_club_leo"
+      ),
+
+    distrito_leo:
+      formData.distrito,
+
+    expectativas_recreo:
+      getValue(
+        '[name="expectativas_recreo"]',
+        "#expectativas_recreo",
+        '[name="expectativas"]'
+      ),
+
+    que_te_gustaria_aportar:
+      getValue(
+        '[name="que_te_gustaria_aportar"]',
+        "#que_te_gustaria_aportar",
+        '[name="aporte"]'
+      ),
+
+    habilidades_mochila:
+      habilidades.length > 0
+        ? habilidades
+        : null,
+
+    otra_habilidad_mochila:
+      getValue(
+        '[name="otra_habilidad_mochila"]',
+        "#otra_habilidad_mochila",
+        '[name="otra_habilidad"]'
+      ),
+
+    compromisos_aceptados:
+      compromisos.length > 0
+        ? compromisos
+        : null
+  };
+}
+
+
+// =========================================================
+// ENVIAR A SUPABASE
+// =========================================================
+
+async function submitRegistration() {
+
+  const data =
+    collectFormData();
+
+  console.log(
+    "Datos que se enviarán a Supabase:",
+    data
+  );
+
+  try {
+
+    const {
+      data: insertedData,
+      error
+    } = await supabaseClient
+      .from("recreo_registros")
+      .insert([data])
+      .select();
+
+    if (error) {
+
+      console.error(
+        "Supabase respondió con error:",
+        error
+      );
+
+      throw error;
+    }
+
+    console.log(
+      "Inscripción guardada correctamente:",
+      insertedData
+    );
+
+    showSuccessScreen();
+
+  } catch (error) {
+
+    console.error(
+      "ERROR COMPLETO:",
+      error
+    );
+
+    showToast(
+      "No pudimos enviar la inscripción. Revisá los datos e intentá nuevamente."
+    );
+
+  }
+}
+
+
+// =========================================================
+// ENVÍO DEL FORMULARIO
+// =========================================================
+
+if (form) {
+
+  form.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      const button =
+        form.querySelector(
+          'button[type="submit"]'
+        );
+
+      if (button) {
+        button.disabled = true;
+        button.dataset.originalText =
+          button.textContent;
+
+        button.textContent =
+          "ENVIANDO...";
+      }
+
+      try {
+
+        await submitRegistration();
+
+      } finally {
+
+        if (button) {
+
+          button.disabled = false;
+
+          button.textContent =
+            button.dataset.originalText ||
+            "CONFIRMAR INSCRIPCIÓN";
+
+        }
+
+      }
+
+    }
+  );
+
+}
+
+
+// =========================================================
+// PANTALLA FINAL
+// =========================================================
+
+function showSuccessScreen() {
+
+  const successScreen =
+    document.querySelector(
+      ".success-screen"
+    );
+
+  if (!successScreen) return;
+
+  successScreen.classList.add(
+    "show"
+  );
+
+  createConfetti();
+}
+
+
+// =========================================================
+// CONFETI
+// =========================================================
+
+function createConfetti() {
+
+  const container =
+    document.querySelector(
+      ".confetti"
+    );
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const pieces = 80;
+
+  for (let i = 0; i < pieces; i++) {
+
+    const piece =
+      document.createElement("span");
+
+    piece.className =
+      "confetti-piece";
+
+    piece.style.left =
+      `${Math.random() * 100}%`;
+
+    piece.style.animationDuration =
+      `${3 + Math.random() * 4}s`;
+
+    piece.style.animationDelay =
+      `${Math.random() * 1.5}s`;
+
+    piece.style.transform =
+      `rotate(${Math.random() * 360}deg)`;
+
+    container.appendChild(piece);
+  }
+}
+
+
+// =========================================================
+// TOAST
+// =========================================================
+
+let toastTimeout;
+
+function showToast(message) {
+
+  const toast =
+    document.querySelector(
+      ".toast"
+    );
+
+  if (!toast) {
+    alert(message);
+    return;
+  }
+
+  toast.textContent =
+    message;
+
+  toast.classList.add(
+    "show"
+  );
+
+  clearTimeout(
+    toastTimeout
+  );
+
+  toastTimeout =
+    setTimeout(() => {
+
+      toast.classList.remove(
+        "show"
+      );
+
+    }, 4000);
+}
+
+
+// =========================================================
+// INICIO
+// =========================================================
+
+showScreen(0);
+
+console.log(
+  "RECREO app.js cargado correctamente."
+);

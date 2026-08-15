@@ -602,63 +602,37 @@ function collectFormData() {
 // =========================================================
 
 async function submitRegistration() {
+  const data = collectFormData();
 
-  const data =
-    collectFormData();
-
-  console.log(
-    "Datos que se enviarán a Supabase:",
-    data
-  );
+  console.log("Datos que se enviarán a Supabase:", data);
 
   try {
-
     const { error } = await supabaseClient
-  .from("recreo_registros")
-  .insert([data]);
-
-if (error) {
-  console.error(
-    "Supabase respondió con error:",
-    error
-  );
-
-  throw error;
-}
-
-showSuccessScreen();
+      .from("recreo_registros")
+      .insert([data]);
 
     if (error) {
+      console.error("Supabase respondió con error:", error);
 
-      console.error(
-        "Supabase respondió con error:",
-        error
+      showToast(
+        "No pudimos enviar la inscripción. Intentá nuevamente."
       );
 
-      throw error;
+      return;
     }
 
-    console.log(
-      "Inscripción guardada correctamente:",
-      insertedData
-    );
+    console.log("Inscripción guardada correctamente.");
 
     showSuccessScreen();
 
   } catch (error) {
-
-    console.error(
-      "ERROR COMPLETO:",
-      error
-    );
+    console.error("ERROR COMPLETO:", error);
 
     showToast(
-      "No pudimos enviar la inscripción. Revisá los datos e intentá nuevamente."
+      "No pudimos enviar la inscripción. Intentá nuevamente."
     );
-
   }
 }
-
 
 // =========================================================
 // ENVÍO DEL FORMULARIO

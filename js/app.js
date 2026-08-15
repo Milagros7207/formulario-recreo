@@ -177,19 +177,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (index === 1) {
       const requiredFields = [
         {
-          id: "nombre",
+          id: "nombre_apellido",
           message: "Ingresá tu nombre y apellido."
         },
         {
-          id: "cedula",
+          id: "cedula_identidad",
           message: "Ingresá tu número de cédula."
         },
         {
-          id: "telefono",
+          id: "celular_whatsapp",
           message: "Ingresá tu número de celular o WhatsApp."
         },
         {
-          id: "ciudad",
+          id: "ciudad_procedencia",
           message: "Ingresá tu ciudad."
         }
       ];

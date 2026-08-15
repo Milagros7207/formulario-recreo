@@ -796,3 +796,6 @@ showScreen(0);
 console.log(
   "RECREO app.js cargado correctamente."
 );
+document.querySelector(".success-screen .btn")?.addEventListener("click", () => {
+  window.location.reload();
+});

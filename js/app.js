@@ -688,18 +688,106 @@ if (form) {
 // PANTALLA FINAL
 // =========================================================
 
-function showSuccessScreen() {
-  const successScreen = document.querySelector(".success-screen");
+function showSuccessScreen(data) {
+  /*
+   * IMPORTANTE:
+   * No modificamos .success-mascot.
+   *
+   * El HTML ya contiene:
+   *
+   * <img src="assets/recreo-logo.png">
+   *
+   * Por eso aparece solamente el logo de RECREO.
+   */
 
-  if (!successScreen) return;
+  if (successScreen) {
+    successScreen.classList.add("show");
+    successScreen.setAttribute("aria-hidden", "false");
+  }
 
-  successScreen.classList.add("show");
+  createConfetti();
 
-  setTimeout(() => {
-    createConfetti();
-  }, 100);
+  console.log(
+    "Inscripción completada:",
+    data
+  );
 }
 
+
+// =========================================================
+// CONFETI
+// =========================================================
+
+function createConfetti() {
+  if (!confetti) return;
+
+  confetti.innerHTML = "";
+
+  const symbols = [
+    "🎉",
+    "✨",
+    "🎨",
+    "🧸",
+    "🎲",
+    "🪁",
+    "💜",
+    "🌈"
+  ];
+
+  const amount = 35;
+
+  for (let i = 0; i < amount; i++) {
+    const piece = document.createElement("span");
+
+    piece.textContent =
+      symbols[Math.floor(Math.random() * symbols.length)];
+
+    piece.style.position = "absolute";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.top = `${-10 - Math.random() * 20}%`;
+
+    piece.style.fontSize =
+      `${16 + Math.random() * 18}px`;
+
+    piece.style.animation =
+      `confettiFall ${3 + Math.random() * 3}s linear forwards`;
+
+    piece.style.animationDelay =
+      `${Math.random() * 1.5}s`;
+
+    confetti.appendChild(piece);
+  }
+}
+
+
+// =========================================================
+// ANIMACIÓN DEL CONFETI
+// =========================================================
+
+const confettiStyle =
+  document.createElement("style");
+
+confettiStyle.textContent = `
+  @keyframes confettiFall {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    100% {
+      transform:
+        translateY(115vh)
+        rotate(720deg);
+      opacity: 0;
+    }
+  }
+`;
+
+document.head.appendChild(confettiStyle);
 
 // =========================================================
 // CONFETI

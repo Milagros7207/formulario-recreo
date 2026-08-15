@@ -3,7 +3,8 @@
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("recreoForm");
+    const supabase = supabase.createClient('https://gdyjouqlbchxnionizbj.supabase.co', 'sb_publishable_Pw78XnAc6Sb-wfEZ60-VwQ_85fZ4yN8');
+    const form = document.getElementById("recreoForm");
   const screens = [...document.querySelectorAll(".screen")];
 
   const progressFill = document.getElementById("progressFill");
@@ -758,46 +759,3 @@ function launchConfetti() {
     confetti.innerHTML = "";
   }, 6000);
 }
-// Cargar librería de Supabase
-const supabase = supabase.createClient(
-    'https://gdyjouqlbchxnionizbj.supabase.co', 
-    'sb_publishable_Pw78XnAc6Sb-wFEZ60-wVdQ_85f24...' // Tu llave pública de Supabase
-);
-
-const formulario = document.querySelector('form');
-
-formulario.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Recolectar todos los inputs de texto y selección normal por su atributo 'name'
-    const datos = {
-        nombre_apellido: document.querySelector('[name="nombre"]').value,
-        cedula_identidad: document.querySelector('[name="cedula"]').value,
-        celular_whatsapp: document.querySelector('[name="celular"]').value,
-        instagram: document.querySelector('[name="instagram"]').value,
-        ciudad_procedencia: document.querySelector('[name="ciudad"]').value,
-        forma_parte_organizacion: document.querySelector('[name="organizacion"]')?.value || '',
-        cual_organizacion: document.querySelector('[name="forma_parte_organizacion"]')?.value || '',
-        forma_parte_club_leo: document.querySelector('[name="clubLeo"]')?.value || '',
-        nombre_club_leo: document.querySelector('[name="clubleo"]')?.value || '',
-        distrito_leo: document.querySelector('[name="distrito"]')?.value || '',
-        expectativas_recreo: document.querySelector('[name="expectativas"]')?.value || '',
-        que_te_gustaria_aportar: document.querySelector('[name="aportar"]')?.value || '',
-        habilidades_mochila: document.querySelector('[name="habilidad"]')?.value || '',
-        otra_habilidad_mochila: document.querySelector('[name="otraMochila"]')?.value || '',
-        
-        // Juntar todos los checkboxes marcados de "compromiso" en un solo texto separado por comas
-        compromisos_aceptados: Array.from(document.querySelectorAll('input[name="compromiso"]:checked'))
-            .map(cb => cb.value)
-            .join(', ')
-    };
-
-    const { data, error } = await supabase.from('recreo_registros').insert([datos]);
-
-    if (error) {
-        alert('Error al enviar: ' + error.message);
-    } else {
-        alert('¡Inscripción enviada con éxito!');
-        formulario.reset();
-    }
-});

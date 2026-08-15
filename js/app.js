@@ -1,757 +1,236 @@
-/* =========================================================
-   RECREO — APP.JS
-   ========================================================= */
+// Inicialización de Supabase
+const SUPABASE_URL = "https://TU_SUPABASE_URL.supabase.co"; // Reemplazar con tu URL
+const SUPABASE_KEY = "TU_SUPABASE_ANON_KEY"; // Reemplazar con tu Key pública
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 document.addEventListener("DOMContentLoaded", () => {
-    const supabase = window.supabase.createClient('https://gdyjouqlbchxnionizbj.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkeWpvdXFsYmNoeG5pb25pemJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODU4MTQsImV4cCI6MjEwMTQ2MTgxNH0.80EPEAz3NZ0K7cOIM1_B3rG62GE1ZvLjEbydTLEAhVk');
-    const form = document.getElementById("recreoForm");
-  const screens = [...document.querySelectorAll(".screen")];
+  let currentScreen = 1;
+  const totalScreens = 4;
 
-  const progressFill = document.getElementById("progressFill");
-  const progressPercent = document.getElementById("progressPercent");
-  const stepLabel = document.getElementById("stepLabel");
-  const progressDots = [...document.querySelectorAll(".progress-dots span")];
-
-  const transitionOverlay = document.getElementById("transitionOverlay");
-  const successScreen = document.getElementById("successScreen");
-  const closeSuccess = document.getElementById("closeSuccess");
+  const form = document.getElementById("multiStepForm");
+  const btnPrev = document.getElementById("btnPrev");
+  const btnNext = document.getElementById("btnNext");
+  const btnSubmit = document.getElementById("btnSubmit");
   const toast = document.getElementById("toast");
-  const confetti = document.getElementById("confetti");
 
-  let currentScreen = 0;
-
-  const totalScreens = screens.length;
-
-  /* =========================================================
-     DATOS DEL FORMULARIO
-     ========================================================= */
-
-  const formData = {
-    organizacion: "",
-    clubLeo: "",
-    distrito: "",
-    habilidades: []
-  };
-
-  /* =========================================================
-     ETIQUETAS DE PROGRESO
-     ========================================================= */
-
-  const stepLabels = [
-    "ENTRADA",
-    "CONOCERTE",
-    "TU MUNDO",
-    "EXPECTATIVAS",
-    "LA MOCHILA",
-    "RECREADOR/A",
-    "PREPARATE",
-    "COMPROMISO"
-  ];
-
-  /* =========================================================
-     MOSTRAR PANTALLA
-     ========================================================= */
-
-  function showScreen(index, animate = true) {
-    if (index < 0 || index >= totalScreens) return;
-
-    screens.forEach((screen, i) => {
-      screen.classList.toggle("active", i === index);
-    });
-
-    currentScreen = index;
-
-    const percent =
-      totalScreens <= 1
-        ? 0
-        : Math.round((index / (totalScreens - 1)) * 100);
-
-    if (progressFill) {
-      progressFill.style.width = `${percent}%`;
+  // Manejo de visibilidad para campos condicionales
+  form.addEventListener("change", (e) => {
+    if (e.target.name === "organizacion") {
+      const field = document.getElementById("field-organizaciones");
+      if (e.target.value === "Sí") {
+        field.classList.remove("hidden");
+      } else {
+        field.classList.add("hidden");
+      }
     }
 
-    if (progressPercent) {
-      progressPercent.textContent = `${percent}%`;
+    if (e.target.name === "clubLeo") {
+      const field = document.getElementById("field-club-leo");
+      if (e.target.value === "Sí") {
+        field.classList.remove("hidden");
+      } else {
+        field.classList.add("hidden");
+      }
     }
+  });
 
-    if (stepLabel) {
-      stepLabel.textContent = stepLabels[index] || `PASO ${index + 1}`;
+  // Navegación
+  btnNext.addEventListener("click", () => {
+    if (validateScreen(currentScreen)) {
+      if (currentScreen < totalScreens) {
+        currentScreen++;
+        updateScreenView();
+      }
     }
+  });
 
-    progressDots.forEach((dot, i) => {
-      dot.classList.toggle("active", i === index);
-      dot.classList.toggle("completed", i < index);
+  btnPrev.addEventListener("click", () => {
+    if (currentScreen > 1) {
+      currentScreen--;
+      updateScreenView();
+    }
+  });
+
+  function updateScreenView() {
+    // Actualizar pantallas
+    document.querySelectorAll(".screen").forEach((screen, idx) => {
+      screen.classList.toggle("active", idx + 1 === currentScreen);
     });
 
-    window.scrollTo({
-      top: 0,
-      behavior: animate ? "smooth" : "auto"
+    // Actualizar Stepper
+    document.querySelectorAll(".stepper .step").forEach((step, idx) => {
+      const stepNum = idx + 1;
+      step.classList.toggle("active", stepNum === currentScreen);
+      step.classList.toggle("completed", stepNum < currentScreen);
     });
-  }
 
-  /* =========================================================
-     TRANSICIÓN
-     ========================================================= */
+    // Actualizar botones
+    btnPrev.disabled = currentScreen === 1;
 
-  function goToScreen(index) {
-    if (index === currentScreen) return;
-
-    if (transitionOverlay) {
-      transitionOverlay.classList.add("show");
-
-      setTimeout(() => {
-        showScreen(index);
-
-        setTimeout(() => {
-          transitionOverlay.classList.remove("show");
-        }, 250);
-      }, 300);
+    if (currentScreen === totalScreens) {
+      btnNext.classList.add("hidden");
+      btnSubmit.classList.remove("hidden");
     } else {
-      showScreen(index);
+      btnNext.classList.remove("hidden");
+      btnSubmit.classList.add("hidden");
     }
   }
 
-  /* =========================================================
-     TOAST
-     ========================================================= */
+  // Validación por pantalla
+  function validateScreen(screenNumber) {
+    let valid = true;
+    clearErrors();
 
-  let toastTimer;
+    const screenEl = document.getElementById(`screen-${screenNumber}`);
+    const formData = collectFormData();
 
-  function showToast(message) {
-    if (!toast) return;
-
-    clearTimeout(toastTimer);
-
-    toast.textContent = message;
-    toast.classList.add("show");
-
-    toastTimer = setTimeout(() => {
-      toast.classList.remove("show");
-    }, 3000);
-  }
-
-  /* =========================================================
-     LIMPIAR ERRORES
-     ========================================================= */
-
-  function clearErrors(container = document) {
-    container.querySelectorAll(".input-error").forEach((input) => {
-      input.classList.remove("input-error");
-    });
-
-    container.querySelectorAll(".field-error").forEach((error) => {
-      error.remove();
-    });
-  }
-
-  function markInputError(input, message = "Este campo es obligatorio.") {
-    if (!input) return;
-
-    input.classList.add("input-error");
-
-    const parent = input.closest(".field-card, .textarea-card");
-
-    if (parent && !parent.querySelector(".field-error")) {
-      const error = document.createElement("small");
-      error.className = "field-error";
-      error.textContent = message;
-      parent.appendChild(error);
-    }
-  }
-
-  /* =========================================================
-     VALIDACIÓN DE PANTALLAS
-     ========================================================= */
-
-  function validateScreen(index) {
-    clearErrors(screens[index]);
-
-    const screen = screens[index];
-
-    if (!screen) return true;
-
-    /* -----------------------------------------
-       PANTALLA 02 — DATOS PERSONALES
-       ----------------------------------------- */
-
-    if (index === 1) {
-      const requiredFields = [
-        {
-          id: "nombre_apellido",
-          message: "Ingresá tu nombre y apellido."
-        },
-        {
-          id: "cedula_identidad",
-          message: "Ingresá tu número de cédula."
-        },
-        {
-          id: "celular_whatsapp",
-          message: "Ingresá tu número de celular o WhatsApp."
-        },
-        {
-          id: "ciudad_procedencia",
-          message: "Ingresá tu ciudad."
-        }
-      ];
-
-      let valid = true;
-
-      requiredFields.forEach(({ id, message }) => {
-        const input = document.getElementById(id);
-
-        if (!input || !input.value.trim()) {
-          markInputError(input, message);
+    if (screenNumber === 1) {
+      const reqs = ["nombreCompleto", "cedula", "fechaNacimiento", "talle", "ciudad"];
+      reqs.forEach((field) => {
+        if (!formData[field]) {
+          markInputError(screenEl.querySelector(`[name="${field}"]`), "Este campo es requerido.");
           valid = false;
         }
       });
-
-      if (!valid) {
-        showToast("Completá los campos obligatorios.");
-      }
-
-      return valid;
     }
 
-    /* -----------------------------------------
-       PANTALLA 03 — ORGANIZACIÓN / CLUB LEO
-       ----------------------------------------- */
-
-    if (index === 2) {
-      let valid = true;
-
-      if (!formData.organizacion) {
-        showToast("Indicá si formás parte de alguna organización.");
+    if (screenNumber === 2) {
+      if (!formData.whatsapp) {
+        markInputError(screenEl.querySelector('[name="whatsapp"]'), "Ingresá tu WhatsApp.");
         valid = false;
+      }
+      if (!formData.email || !formData.email.includes("@")) {
+        markInputError(screenEl.querySelector('[name="email"]'), "Ingresá un correo válido.");
+        valid = false;
+      }
+    }
+
+    if (screenNumber === 3) {
+      if (!formData.organizacion) {
+        showToast("Seleccioná si formás parte de alguna organización.");
+        valid = false;
+      } else if (formData.organizacion === "Sí") {
+        const organizaciones = form.querySelector('[name="forma_parte_organizacion"]');
+        if (!organizaciones || !organizaciones.value.trim()) {
+          markInputError(organizaciones, "Contanos de cuál/es formás parte.");
+          valid = false;
+        }
       }
 
       if (!formData.clubLeo) {
-        showToast("Indicá si formás parte de un Club Leo.");
+        showToast("Seleccioná si formás parte del Club Leo.");
         valid = false;
-      }
-
-      if (
-        formData.organizacion === "Sí"
-      ) {
-        const organizaciones =
-          form.querySelector('[name="organizaciones"]');
-
-        if (!organizaciones || !organizaciones.value.trim()) {
-          markInputError(
-            organizaciones,
-            "Contanos de cuál/es formás parte."
-          );
-          valid = false;
-        }
-      }
-
-      if (formData.clubLeo === "Sí") {
-        const clubLeoNombre =
-          form.querySelector('[name="clubLeoNombre"]');
-
+      } else if (formData.clubLeo === "Sí") {
+        const clubLeoNombre = form.querySelector('[name="clubLeoNombre"]');
         if (!clubLeoNombre || !clubLeoNombre.value.trim()) {
-          markInputError(
-            clubLeoNombre,
-            "Ingresá el nombre de tu Club Leo."
-          );
+          markInputError(clubLeoNombre, "Ingresá el nombre de tu Club Leo.");
           valid = false;
         }
-
         if (!formData.distrito) {
           showToast("Seleccioná tu Distrito.");
           valid = false;
         }
       }
-
-      return valid;
     }
 
-    /* -----------------------------------------
-       PANTALLA 04 — EXPECTATIVAS
-       ----------------------------------------- */
-
-    if (index === 3) {
-      const expectativas =
-        form.querySelector('[name="expectativas"]');
-
-      if (!expectativas || !expectativas.value.trim()) {
-        markInputError(
-          expectativas,
-          "Contanos qué esperás de RECREO."
-        );
-
-        showToast("Completá tu expectativa.");
-        return false;
+    if (screenNumber === 4) {
+      if (!formData.traslado) {
+        showToast("Seleccioná cómo pensás trasladarte.");
+        valid = false;
       }
-
-      return true;
+      if (!formData.compromiso_participacion || !formData.compromiso_reglamento) {
+        showToast("Debes aceptar los compromisos para continuar.");
+        valid = false;
+      }
     }
 
-    return true;
+    return valid;
   }
 
-  /* =========================================================
-     BOTONES SIGUIENTE
-     ========================================================= */
+  function markInputError(inputEl, message) {
+    if (!inputEl) return;
+    
+    // Si es radio button, marcar el contenedor
+    if (inputEl.length) {
+      inputEl = inputEl[0].closest(".form-group");
+    } else {
+      inputEl.classList.add("input-error");
+    }
 
-  document.querySelectorAll("[data-next]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (!validateScreen(currentScreen)) return;
+    const parent = inputEl.closest(".form-group") || inputEl.parentElement;
+    let err = parent.querySelector(".field-error-msg");
+    if (!err) {
+      err = document.createElement("div");
+      err.className = "field-error-msg";
+      parent.appendChild(err);
+    }
+    err.textContent = message;
+  }
 
-      if (currentScreen < totalScreens - 1) {
-        goToScreen(currentScreen + 1);
-      }
-    });
-  });
+  function clearErrors() {
+    document.querySelectorAll(".input-error").forEach((el) => el.classList.remove("input-error"));
+    document.querySelectorAll(".field-error-msg").forEach((el) => el.remove());
+  }
 
-  /* =========================================================
-     BOTONES VOLVER
-     ========================================================= */
-
-  document.querySelectorAll("[data-prev]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (currentScreen > 0) {
-        goToScreen(currentScreen - 1);
-      }
-    });
-  });
-
-  /* =========================================================
-     ELECCIONES SÍ / NO
-     ========================================================= */
-
-  document.querySelectorAll(".choice-card").forEach((button) => {
-    button.addEventListener("click", () => {
-      const choice = button.dataset.choice;
-      const value = button.dataset.value;
-
-      document
-        .querySelectorAll(
-          `.choice-card[data-choice="${choice}"]`
-        )
-        .forEach((item) => {
-          item.classList.remove("selected");
-        });
-
-      button.classList.add("selected");
-
-      formData[choice] = value;
-
-      /* Organización */
-
-      if (choice === "organizacion") {
-        const conditional =
-          document.getElementById("orgConditional");
-
-        if (conditional) {
-          conditional.classList.toggle(
-            "show",
-            value === "Sí"
-          );
-        }
-
-        if (value === "No") {
-          const input =
-            form.querySelector('[name="organizaciones"]');
-
-          if (input) {
-            input.value = "";
-            input.classList.remove("input-error");
-          }
-        }
-      }
-
-      /* Club Leo */
-
-      if (choice === "clubLeo") {
-        const conditional =
-          document.getElementById("leoConditional");
-
-        if (conditional) {
-          conditional.classList.toggle(
-            "show",
-            value === "Sí"
-          );
-        }
-
-        if (value === "No") {
-          const clubInput =
-            form.querySelector('[name="clubLeoNombre"]');
-
-          if (clubInput) {
-            clubInput.value = "";
-            clubInput.classList.remove("input-error");
-          }
-
-          formData.distrito = "";
-
-          document
-            .querySelectorAll(".district")
-            .forEach((district) => {
-              district.classList.remove("selected");
-            });
-        }
-      }
-    });
-  });
-
-  /* =========================================================
-     DISTRITOS
-     ========================================================= */
-
-  document.querySelectorAll(".district").forEach((button) => {
-    button.addEventListener("click", () => {
-      document
-        .querySelectorAll(".district")
-        .forEach((district) => {
-          district.classList.remove("selected");
-        });
-
-      button.classList.add("selected");
-
-      formData.distrito = button.dataset.value;
-    });
-  });
-
-  /* =========================================================
-     HABILIDADES / MOCHILA
-     ========================================================= */
-
-  document.querySelectorAll(".skill-card").forEach((button) => {
-    button.addEventListener("click", () => {
-      const skill = button.dataset.skill;
-
-      button.classList.toggle("selected");
-
-      if (button.classList.contains("selected")) {
-        if (!formData.habilidades.includes(skill)) {
-          formData.habilidades.push(skill);
-        }
-      } else {
-        formData.habilidades =
-          formData.habilidades.filter(
-            (item) => item !== skill
-          );
-      }
-    });
-  });
-
-  /* =========================================================
-     CHIPS DE IDEAS
-     ========================================================= */
-
-  document.querySelectorAll(".idea-chip").forEach((button) => {
-    button.addEventListener("click", () => {
-      const targetName = button.dataset.insert;
-      const text = button.dataset.text;
-
-      const textarea =
-        form.querySelector(`[name="${targetName}"]`);
-
-      if (!textarea) return;
-
-      if (textarea.value.trim()) {
-        textarea.value += ` ${text}`;
-      } else {
-        textarea.value = text;
-      }
-
-      textarea.focus();
-    });
-  });
-
-  /* =========================================================
-     QUITAR ERROR AL ESCRIBIR
-     ========================================================= */
-
-  form.querySelectorAll("input, textarea").forEach((input) => {
-    input.addEventListener("input", () => {
-      input.classList.remove("input-error");
-
-      const parent =
-        input.closest(".field-card, .textarea-card");
-
-      if (parent) {
-        const error =
-          parent.querySelector(".field-error");
-
-        if (error) error.remove();
-      }
-    });
-  });
-
-  /* =========================================================
-     OBTENER DATOS
-     ========================================================= */
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.remove("hidden");
+    setTimeout(() => {
+      toast.classList.add("hidden");
+    }, 3000);
+  }
 
   function collectFormData() {
     const data = {};
+    const elements = form.querySelectorAll("input, textarea, select");
 
-    const formElements = form.querySelectorAll(
-      "input, textarea, select"
-    );
+    elements.forEach((el) => {
+      if (!el.name) return;
 
-    formElements.forEach((element) => {
-      if (!element.name) return;
-
-      if (element.type === "checkbox") {
-        if (!data[element.name]) {
-          data[element.name] = [];
-        }
-
-        if (element.checked) {
-          data[element.name].push(element.value);
-        }
-
-        return;
+      if (el.type === "radio") {
+        if (el.checked) data[el.name] = el.value;
+      } else if (el.type === "checkbox") {
+        data[el.name] = el.checked;
+      } else {
+        data[el.name] = el.value;
       }
-
-      data[element.name] = element.value.trim();
     });
-
-    data.organizacion = formData.organizacion;
-    data.clubLeo = formData.clubLeo;
-    data.distrito = formData.distrito;
-    data.habilidades = [...formData.habilidades];
-
-    data.fechaEnvio = new Date().toISOString();
 
     return data;
   }
 
-  /* =========================================================
-     ENVÍO DEL FORMULARIO
-     ========================================================= */
-
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  // Envío de Formulario a Supabase
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
     if (!validateScreen(currentScreen)) return;
 
-    const compromisos =
-      form.querySelectorAll(
-        'input[name="compromiso"]:checked'
-      );
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = "Guardando...";
 
-    if (compromisos.length === 0) {
-      showToast(
-        "Aceptá al menos un compromiso para continuar."
-      );
-      return;
-    }
+    const formData = collectFormData();
 
-    const data = collectFormData();
-
-    console.log("Datos de inscripción:", data);
-
-    /*
-      ========================================================
-      IMPORTANTE PARA BASE DE DATOS
-
-      Acá es donde tenés que conectar tu backend.
-
-      Ejemplo:
-
-      const response = await fetch("TU_URL_API", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al guardar");
+    try {
+      if (!supabase) {
+        throw new Error("Supabase no está configurado correctamente.");
       }
 
-      ========================================================
-    */
+      const { data, error } = await supabase
+        .from("recreo_registros")
+        .insert([formData]);
 
-try {
-      const { error } = await supabase
-        .from('recreo_registros')
-        .insert([data]);
+      if (error) throw error;
 
-      if (error) {
-        throw error;
-      }
-
-      showSuccessScreen(data);
-
-    } catch (error) {
-      console.error("Error al guardar en Supabase:", error);
-
-      showToast(
-        "No pudimos enviar la inscripción. Intentá nuevamente."
-      );
+      showToast("¡Inscripción completada con éxito! 🎉");
+      form.reset();
+      currentScreen = 1;
+      updateScreenView();
+    } catch (err) {
+      console.error("Error al guardar:", err);
+      showToast("Ocurrió un error al enviar tu inscripción. Intentalo de nuevo.");
+    } finally {
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "¡Enviar Inscripción! 🚀";
     }
   });
-
-  /* =========================================================
-     PANTALLA FINAL
-     ========================================================= */
-
-  function showSuccessScreen(data) {
-    /*
-     * IMPORTANTE:
-     * No modificamos .success-mascot.
-     *
-     * El HTML ya contiene:
-     *
-     * <img src="assets/recreo-logo.png">
-     *
-     * Por eso aparece solamente el logo de RECREO.
-     */
-
-    if (successScreen) {
-      successScreen.classList.add("show");
-      successScreen.setAttribute("aria-hidden", "false");
-    }
-
-    createConfetti();
-
-    console.log(
-      "Inscripción completada:",
-      data
-    );
-  }
-
-  /* =========================================================
-     CONFETI
-     ========================================================= */
-
-  function createConfetti() {
-    if (!confetti) return;
-
-    confetti.innerHTML = "";
-
-    const symbols = [
-      "🎉",
-      "✨",
-      "🎨",
-      "🧸",
-      "🎲",
-      "🪁",
-      "💜",
-      "🌈"
-    ];
-
-    const amount = 35;
-
-    for (let i = 0; i < amount; i++) {
-      const piece = document.createElement("span");
-
-      piece.textContent =
-        symbols[Math.floor(Math.random() * symbols.length)];
-
-      piece.style.position = "absolute";
-      piece.style.left = `${Math.random() * 100}%`;
-      piece.style.top = `${-10 - Math.random() * 20}%`;
-      piece.style.fontSize =
-        `${16 + Math.random() * 18}px`;
-      piece.style.animation =
-        `confettiFall ${3 + Math.random() * 3}s linear forwards`;
-      piece.style.animationDelay =
-        `${Math.random() * 1.5}s`;
-
-      confetti.appendChild(piece);
-    }
-  }
-
-  /* =========================================================
-     ANIMACIÓN DEL CONFETI
-     ========================================================= */
-
-  const confettiStyle =
-    document.createElement("style");
-
-  confettiStyle.textContent = `
-    @keyframes confettiFall {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 0;
-      }
-
-      10% {
-        opacity: 1;
-      }
-
-      100% {
-        transform:
-          translateY(115vh)
-          rotate(720deg);
-        opacity: 0;
-      }
-    }
-  `;
-
-  document.head.appendChild(confettiStyle);
-
-  /* =========================================================
-   CERRAR PANTALLA FINAL Y VOLVER AL INICIO
-   ========================================================= */
-
-if (closeSuccess) {
-  closeSuccess.addEventListener("click", () => {
-
-    // Ocultar la pantalla final
-    successScreen.classList.remove("show");
-    successScreen.setAttribute("aria-hidden", "true");
-
-    // Volver a la primera pantalla
-    showScreen(0, false);
-
-    // Volver arriba de todo
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  });
-}
-
-  /* =========================================================
-     INICIO
-     ========================================================= */
-
-  showScreen(0, false);
 });
-function launchConfetti() {
-  const confetti = document.getElementById("confetti");
-
-  if (!confetti) return;
-
-  confetti.innerHTML = "";
-
-  const colors = [
-    "#ff6b35",
-    "#ffc857",
-    "#7b61ff",
-    "#ff5c8a",
-    "#65c466",
-    "#4da6ff"
-  ];
-
-  for (let i = 0; i < 100; i++) {
-    const piece = document.createElement("span");
-
-    piece.className = "confetti-piece";
-
-    piece.style.left = Math.random() * 100 + "%";
-    piece.style.background =
-      colors[Math.floor(Math.random() * colors.length)];
-
-    piece.style.animationDuration =
-      2.5 + Math.random() * 2.5 + "s";
-
-    piece.style.animationDelay =
-      Math.random() * 0.8 + "s";
-
-    piece.style.transform =
-      `rotate(${Math.random() * 360}deg)`;
-
-    confetti.appendChild(piece);
-  }
-
-  setTimeout(() => {
-    confetti.innerHTML = "";
-  }, 6000);
-}
